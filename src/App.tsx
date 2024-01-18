@@ -1,41 +1,39 @@
-// import Forecast from './components/Forecast'
-// import Search from './components/Search'
-
-// import useForecast from './hooks/useForecast'
-
-// const App = (): JSX.Element => {
-//   const { forecast, options, term, onOptionSelect, onSubmit, onInputChange } =
-//     useForecast()
-
-//   return (
-//     <main className="flex justify-center items-center bg-gradient-to-br from-sky-400 via-rose-400 to-lime-400 h-[100vh] w-full">
-//       {forecast ? (
-//         <Forecast data={forecast} />
-//       ) : (
-//         <Search
-//           term={term}
-//           options={options}
-//           onInputChange={onInputChange}
-//           onOptionSelect={onOptionSelect}
-//           onSubmit={onSubmit}
-//         />
-//       )}
-//     </main>
-//   )
-// }
-
-// export default App
-
-
 
 import React, { ChangeEvent } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Forecast from './components/Forecast';
 import Search from './components/Search';
 import useForecast from './hooks/useForecast';
+import { forecastType } from './types'
+
+type Props = {
+  // term: string;
+  // options: [];
+  // onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  // onOptionSelect: (option: optionType) => void;
+  // onSubmit: () => void;
+  data: forecastType | null;
+};
+
+const ForecastWrapper = ({data}: Props) => {
+  return (
+    <>
+    {
+      data && <Forecast data={data} />
+    } {
+      !data && (
+        <>
+        Loading
+        </>
+      )
+    }
+    </>
+  )
+}
 
 const App: React.FC = (): JSX.Element => {
-  const { forecast, options, term, onOptionSelect, onSubmit, onInputChange } = useForecast();
+  const { forecast, city, options, term, onOptionSelect, onSubmit, onInputChange, error } = useForecast();
+
 
   return (
     <Router>
@@ -45,6 +43,9 @@ const App: React.FC = (): JSX.Element => {
             path="/"
             element={
               <Search
+                data={forecast}
+                error={error}
+                city={city}
                 term={term}
                 options={options}
                 onInputChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e)}
@@ -55,7 +56,10 @@ const App: React.FC = (): JSX.Element => {
           />
           <Route
             path="/forecast"
-            element={forecast && <Forecast data={forecast} />}
+
+            element={
+              <ForecastWrapper data={forecast} />
+            }
           />
         </Routes>
       </main>

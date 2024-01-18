@@ -8,9 +8,13 @@ const useForecast = () => {
   const [city, setCity] = useState<optionType | null>(null)
   const [term, setTerm] = useState<string>('')
   const [options, setOptions] = useState<[]>([])
+  const [error, setError] = useState<null | Error>(null)
   const [forecast, setForecast] = useState<forecastType | null>(null)
 
   const getSearchOptions = async (term: string) => {
+    
+    setCity(null)
+
     fetch(
       `${BASE_URL}/geo/1.0/direct?q=${term.trim()}&limit=5&lang=en&appid=${
         process.env.REACT_APP_API_KEY
@@ -18,7 +22,12 @@ const useForecast = () => {
     )
       .then((res) => res.json())
       .then((data) => setOptions(data))
-      .catch((e) => console.log({ e }))
+      .catch((e) => {
+        const newError = new Error (
+          "city not found"
+        ) 
+        setError(newError)
+      })
   }
 
   const onSubmit = () => {
@@ -70,6 +79,8 @@ const useForecast = () => {
     onOptionSelect,
     onSubmit,
     onInputChange,
+    error,
+    city
   }
 }
 

@@ -17,6 +17,7 @@ type Props = {
   data: forecastType
 }
 
+
 const Forecast = ({ data }: Props) => {
   const today = data.list[0]
 
